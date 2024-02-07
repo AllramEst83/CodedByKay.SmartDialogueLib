@@ -1,7 +1,7 @@
-﻿using CodedByKay.SmartDialogueLib.Models;
+﻿using CodedByKay.SmartDialogueLib.Helpers;
+using CodedByKay.SmartDialogueLib.Models;
 using CodedByKay.SmartDialogueLib.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http;
 
 namespace CodedByKay.SmartDialogueLib
 {
@@ -11,6 +11,8 @@ namespace CodedByKay.SmartDialogueLib
         {
             var options = new SmartDialogueLibOptions();
             configureOptions(options);
+
+            ValidationHelpers.ValidateOptions(options);
 
             services.AddHttpClient("OpenAiHttpClient", client =>
             {
