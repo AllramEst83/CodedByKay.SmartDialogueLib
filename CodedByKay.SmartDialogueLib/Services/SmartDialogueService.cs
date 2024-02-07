@@ -1,48 +1,55 @@
-﻿using Newtonsoft.Json;
+﻿using CodedByKay.SmartDialogueLib.Interfaces;
+using CodedByKay.SmartDialogueLib.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Concurrent;
 using System.Text;
 
 namespace CodedByKay.SmartDialogueLib.Services
 {
-    public class SmartDialogueService : ISmartDialogueService
+    public class SmartDialogueService(HttpClient httpClient, SmartDialogueLibOptions options, IChatHistoryService chatHistoryService) : ISmartDialogueService
     {
-        private readonly ConcurrentDictionary<string, List<string>> _chatHistories = new();
-        private readonly HttpClient _httpClient;
-        private readonly string _model;
+        private readonly SmartDialogueLibOptions _options = options;
+        private readonly IChatHistoryService _chatHistoryService = chatHistoryService;
+        private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
-        public SmartDialogueService(HttpClient httpClient, string model)
-        {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _model = model;
-        }
-
-        public async Task<string> SendMessageAsync(string sessionId, string message)
+        public async Task<string> SendMessageAsync(Guid chatId, string message, MessageType messageType)
         {
             // Add the message to chat history
-            var messages = _chatHistories.GetOrAdd(sessionId, _ => new List<string>());
-            lock (messages) // Ensure thread safety for list modification
+            _chatHistoryService.AddChatMessage(message, chatId, MessageType.User);
+
+            var requestPayload = new
             {
-                messages.Add(message);
-            }
+                messages = message.ToArray(),
+                max_tokens = _options.MaxTokens,
+                temperature = _options.Temperature,
+                top_p = _options.TopP,
+                model = _options.Model
+            };
 
             // Prepare the request body
-            var content = new StringContent(JsonConvert.SerializeObject(new { model = _model, prompt = message }), Encoding.UTF8, "application/json");
+            var content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");
 
             // Send the message to OpenAI
             var response = await _httpClient.PostAsync("messages", content);
             response.EnsureSuccessStatusCode();
 
-            var responseContent = await response.Content.ReadAsStringAsync();
-            // Assume responseContent is the response from OpenAI; process as needed
-
-            // Optionally, add the response to the chat history
-            lock (messages)
+            if (response.IsSuccessStatusCode)
             {
-                messages.Add(responseContent);
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                JObject parsedResponse = JObject.Parse(jsonResponse);
+
+                string modelAnswer = parsedResponse["choices"][0]["message"]["content"].ToString();
+
+                _chatHistoryService.AddChatMessage(modelAnswer, chatId, MessageType.System);
+
+                return modelAnswer;
             }
-
-            return responseContent;
+            else
+            {
+                string errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to retrieve response: {response.ReasonPhrase}. Response content: {errorContent}");
+            }
         }
-
     }
 }

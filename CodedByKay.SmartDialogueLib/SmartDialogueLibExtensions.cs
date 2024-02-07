@@ -1,4 +1,5 @@
 ﻿using CodedByKay.SmartDialogueLib.Helpers;
+using CodedByKay.SmartDialogueLib.Interfaces;
 using CodedByKay.SmartDialogueLib.Models;
 using CodedByKay.SmartDialogueLib.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,19 +15,26 @@ namespace CodedByKay.SmartDialogueLib
 
             ValidationHelpers.ValidateOptions(options);
 
+            services.AddSingleton(options);
+
             services.AddHttpClient("OpenAiHttpClient", client =>
             {
                 client.BaseAddress = new Uri(options.OpenAiApiKey);
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", options.OpenAiApiKey);
             });
 
-            services.AddSingleton<ISmartDialogueService, SmartDialogueService>(serviceProvider =>
+            services
+            .AddSingleton<IChatHistoryService, ChatHistoryService>()
+            .AddTransient<ISmartDialogueService, SmartDialogueService>(serviceProvider =>
             {
-                var httpClientFactory = serviceProvider.GetRequiredService<System.Net.Http.IHttpClientFactory>();
+                var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
                 var httpClient = httpClientFactory.CreateClient("OpenAiHttpClient");
-                return new SmartDialogueService(httpClient, options.Model);
-            });
 
+                var chatHistoryService = serviceProvider.GetRequiredService<IChatHistoryService>();
+
+                return new SmartDialogueService(httpClient, options, chatHistoryService);
+            });
+            
             return services;
         }
     }

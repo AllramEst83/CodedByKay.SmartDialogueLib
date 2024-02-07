@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodedByKay.SmartDialogueLib.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace CodedByKay.SmartDialogueLib.Services
 {
     internal interface ISmartDialogueService
     {
-        Task<string> SendMessageAsync(string sessionId, string message);
+        Task<string> SendMessageAsync(Guid chatId, string message, MessageType messageType);
+
     }
 }
