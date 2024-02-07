@@ -25,6 +25,8 @@
 
 - .NET Core 3.1 SDK or later.
 - An OpenAI API key.
+- An OpenAI url.
+- An OpenAI model.
 
 ### Installation
 
