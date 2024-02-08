@@ -48,8 +48,11 @@ public void ConfigureServices(IServiceCollection services)
     services.AddSmartDialogueLib(options =>
     {
         options.OpenAiApiKey = "your_openai_api_key_here";
-        options.Model = "text-davinci-003";
+        options.Model = "gpt-3.5-turbo";
         options.OpenAIApiUrl = "https://api.openai.com/v1/";
+        options.MaxTokens = 2000;
+        options.Temperature = 1;
+        options.TopP = 1;
     });
 }
 ```
