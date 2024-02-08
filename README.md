@@ -49,7 +49,7 @@ public void ConfigureServices(IServiceCollection services)
     {
         options.OpenAiApiKey = "your_openai_api_key_here";
         options.Model = "gpt-3.5-turbo";
-        options.OpenAIApiUrl = "https://api.openai.com/v1/";
+        options.OpenAIApiUrl = "https://api.openai.com/v1/chat/completions";
         options.MaxTokens = 2000;
         options.Temperature = 1;
         options.TopP = 1;
