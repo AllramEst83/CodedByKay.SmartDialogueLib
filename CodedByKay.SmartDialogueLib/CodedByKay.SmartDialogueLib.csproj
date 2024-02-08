@@ -4,12 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <PackageId>CodedByKay.SmartDialogueLib</PackageId>
-    <Version>1.0.0-alpha</Version>
+    <PackageId>CodedByKay.SmartDialogue</PackageId>
+    <Version>1.0.1-alpha</Version>
     <Authors>Kay Wiberg</Authors>
     <Company>CodedByKay</Company>
     <Product>Smart Dialogue Library</Product>
-    <Description>SmartDialogueLib is an alpha version class library designed to facilitate easy integration with OpenAI's API, enabling developers to build intelligent dialog systems. This package is currently under development and subject to changes.</Description>
+    <Description>SmartDialogueL is an alpha version class library designed to facilitate easy integration with OpenAI's API, enabling developers to build intelligent dialog systems. This package is currently under development and subject to changes.</Description>
     <PackageTags>OpenAI;Chatbot;AI;Dialog;SmartDialogue;CodedByKay</PackageTags>
     <RepositoryUrl>https://github.com/AllramEst83/CodedByKay.SmartDialogueLib</RepositoryUrl>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
