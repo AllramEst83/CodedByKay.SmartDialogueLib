@@ -4,12 +4,28 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>CodedByKay.SmartDialogueLib</PackageId>
+    <Version>1.0.0-alpha</Version>
+    <Authors>Kay Wiberg</Authors>
+    <Company>CodedByKay</Company>
+    <Product>Smart Dialogue Library</Product>
+    <Description>SmartDialogueLib is an alpha version class library designed to facilitate easy integration with OpenAI's API, enabling developers to build intelligent dialog systems. This package is currently under development and subject to changes.</Description>
+    <PackageTags>OpenAI;Chatbot;AI;Dialog;SmartDialogue;CodedByKay</PackageTags>
+    <RepositoryUrl>https://github.com/AllramEst83/CodedByKay.SmartDialogueLib</RepositoryUrl>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Adjust paths to point one level up from the .csproj file -->
+    <None Include="../README.md" Pack="true" PackagePath=""/>
+    <None Include="../LICENSE.txt" Pack="true" PackagePath=""/>
   </ItemGroup>
 
 </Project>

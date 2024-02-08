@@ -12,7 +12,7 @@ namespace CodedByKay.SmartDialogueLib.Interfaces
         bool AddChatMessage(string message, Guid chatId, MessageType messageType);
         List<ChatMessage> GetChatMessages(Guid chatId);
         bool DeleteChatHistoryById(Guid chatId);
-        void DeleteAllChatHistory();
+        void DeleteAllChatHistories();
         void ReCalculateHistoryLength(Guid chatId, int maxTokenCount);
     }
 }
