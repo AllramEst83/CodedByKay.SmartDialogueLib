@@ -78,14 +78,23 @@ namespace CodedByKay.SmartDialogueLib.Services
             // Process the response from OpenAI
             if (response.IsSuccessStatusCode)
             {
+                // Read the response content as a string asynchronously.
                 string jsonResponse = await response.Content.ReadAsStringAsync();
+
+                // Parse the JSON response string into a JObject for easier manipulation.
                 JObject parsedResponse = JObject.Parse(jsonResponse);
 
+                // Select the specific token that holds the model's answer from the parsed JSON object.
                 var modelAnswerToken = parsedResponse.SelectToken("choices[0].message.content");
+
+                // Safely convert the selected token to a string, handling the case where the token might not exist.
                 string? modelAnswer = modelAnswerToken?.ToString();
 
                 if (!string.IsNullOrEmpty(modelAnswer))
                 {
+                    // Recalculate the chat history length so it does not exceed the max allowed specified token limit.
+                    _chatHistoryService.ReCalculateHistoryLength(chatId, _options.MaxTokens);
+
                     // Log the OpenAI's response to chat history and return it
                     _chatHistoryService.AddChatMessage(modelAnswer, chatId, MessageType.System);
                     return modelAnswer;
