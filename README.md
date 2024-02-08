@@ -53,6 +53,7 @@ public void ConfigureServices(IServiceCollection services)
         options.MaxTokens = 2000;
         options.Temperature = 1;
         options.TopP = 1;
+        options.AverageTokeLenght = 2.85;
     });
 }
 ```
