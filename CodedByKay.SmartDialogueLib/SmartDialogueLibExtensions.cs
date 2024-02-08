@@ -22,7 +22,7 @@ namespace CodedByKay.SmartDialogueLib
         /// options configuration, HTTP client setup for OpenAI API communication, and singleton
         /// registration for chat history and dialogue services.
         /// </remarks>
-        public static IServiceCollection AddSmartDialogueLib(this IServiceCollection services, Action<SmartDialogueLibOptions> configureOptions)
+        public static IServiceCollection AddSmartDialogue(this IServiceCollection services, Action<SmartDialogueLibOptions> configureOptions)
         {
             // Create a new instance of SmartDialogueLibOptions and configure it using the provided action.
             var options = new SmartDialogueLibOptions();

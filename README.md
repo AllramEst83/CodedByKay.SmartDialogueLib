@@ -1,8 +1,8 @@
-# CodedByKay.SmartDialogueLib Setup Guide
+# CodedByKay.SmartDialogue Setup Guide
 
 ## Overview
 
-`CodedByKay.SmartDialogueLib` is a .NET class library designed to facilitate easy communication with the OpenAI Assistant API, integrating seamlessly into .NET web applications. It supports sending messages, receiving responses, and maintaining a chat history.
+`CodedByKay.SmartDialogue` is a .NET class library designed to facilitate easy communication with the OpenAI Assistant API, integrating seamlessly into .NET web applications. It supports sending messages, receiving responses, and maintaining a chat history.
 
 ## Features
 
@@ -28,24 +28,24 @@
 
 ### Installation
 
-To install `CodedByKay.SmartDialogueLib`, add it to your project via NuGet Package Manager or using the .NET CLI:
+To install `CodedByKay.SmartDialogue`, add it to your project via NuGet Package Manager or using the .NET CLI:
 
 ```shell
-dotnet add package CodedByKay.SmartDialogueLib
+dotnet add package CodedByKay.SmartDialogue
 ```
 
 ### Configuration in Startup.cs
 
-Incorporate CodedByKay.SmartDialogueLib into your project's Startup.cs file to begin using its functionalities.
+Incorporate CodedByKay.SmartDialogue into your project's Startup.cs file to begin using its functionalities.
 
 
-Register SmartDialogueLib Services
-Then, add `CodedByKay.SmartDialogueLib` to your service collection:
+Register SmartDialogue Services
+Then, add `CodedByKay.SmartDialogue` to your service collection:
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddSmartDialogueLib(options =>
+    services.AddSmartDialogue(options =>
     {
         options.OpenAiApiKey = "your_openai_api_key_here";
         options.Model = "gpt-3.5-turbo";
@@ -102,4 +102,4 @@ public class ChatRequest
 ```
 
 ### Conclusion
-With CodedByKay.SmartDialogueLib, you can enhance your .NET web applications by integrating sophisticated chat functionalities powered by the OpenAI Assistant API. Follow this guide to set up and start leveraging this powerful library in your projects.
+With CodedByKay.SmartDialogue, you can enhance your .NET web applications by integrating sophisticated chat functionalities powered by the OpenAI Assistant API. Follow this guide to set up and start leveraging this powerful library in your projects.
