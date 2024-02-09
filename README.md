@@ -47,9 +47,10 @@ public void ConfigureServices(IServiceCollection services)
 {
     services.AddSmartDialogue(options =>
     {
+        // All values are default for the AddSmartDialogue library
         options.OpenAiApiKey = "your_openai_api_key_here";
         options.Model = "gpt-3.5-turbo";
-        options.OpenAIApiUrl = "https://api.openai.com/v1/chat/completions";
+        options.OpenAIApiUrl = "https://api.openai.com";
         options.MaxTokens = 2000;
         options.Temperature = 1;
         options.TopP = 1;
@@ -66,11 +67,11 @@ using Microsoft.AspNetCore.Mvc;
 
 public class ChatController : ControllerBase
 {
-    private readonly ISmartDialogueService _dialogueService;
+    private readonly ISmartDialogueService _smartDialogueService;
 
-    public ChatController(ISmartDialogueService dialogueService)
+    public ChatController(ISmartDialogueServiceFactory smartDialogueServiceFactory)
     {
-        _dialogueService = dialogueService;
+        _smartDialogueService = smartDialogueServiceFactory.Create();
     }
 
     [HttpPost("send")]
@@ -83,7 +84,7 @@ public class ChatController : ControllerBase
 
         try
         {
-            var response = await _dialogueService.SendMessageAsync(request.SessionId, request.Message);
+            var response = await _smartDialogueService.SendMessageAsync(request.SessionId, request.Message);
             return Ok(new { Response = response });
         }
         catch (Exception ex)

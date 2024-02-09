@@ -1,4 +1,5 @@
-﻿using CodedByKay.SmartDialogueLib.Helpers;
+﻿using CodedByKay.SmartDialogueLib.Factories;
+using CodedByKay.SmartDialogueLib.Helpers;
 using CodedByKay.SmartDialogueLib.Interfaces;
 using CodedByKay.SmartDialogueLib.Models;
 using CodedByKay.SmartDialogueLib.Services;
@@ -49,7 +50,7 @@ namespace CodedByKay.SmartDialogueLib
 
             // Register the SmartDialogueService as a transient service.
             // This ensures a new instance is created for each request, allowing for scoped usage patterns such as per-request configuration.
-            services.AddTransient<ISmartDialogueService, SmartDialogueService>(serviceProvider =>
+            services.AddSingleton<ISmartDialogueService, SmartDialogueService>(serviceProvider =>
             {
                 // Resolve the HttpClientFactory and create a named HttpClient for OpenAI communication.
                 var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
@@ -60,7 +61,10 @@ namespace CodedByKay.SmartDialogueLib
 
                 // Create and return a new instance of SmartDialogueService with dependencies injected.
                 return new SmartDialogueService(httpClient, options, chatHistoryService);
-            });
+            })
+
+            // Register the factory as a singleton
+            .AddSingleton<ISmartDialogueServiceFactory, SmartDialogueServiceFactory>();
 
             // Return the IServiceCollection to support method chaining.
             return services;

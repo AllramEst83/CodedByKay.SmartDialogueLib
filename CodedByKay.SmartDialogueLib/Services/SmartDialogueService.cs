@@ -56,14 +56,14 @@ namespace CodedByKay.SmartDialogueLib.Services
                 messagesList.Add(new AssistantModel()
                 {
                     Role = role,
-                    Content = historyMessage.Message // Note: Fixed typo in 'Content'
+                    Content = historyMessage.Message
                 });
             }
 
             // Construct the request payload
             OpenAiRequestModel requestPayload = new()
             {
-                Messages = messagesList.ToArray(),
+                Messages = [.. messagesList],
                 MaxTokens = _options.MaxTokens,
                 Temperature = _options.Temperature,
                 TopP = _options.TopP,
@@ -72,21 +72,21 @@ namespace CodedByKay.SmartDialogueLib.Services
 
             // Serialize the request payload to JSON and send it to OpenAI
             var content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("messages", content);
-            response.EnsureSuccessStatusCode();
+            var response = await _httpClient.PostAsync("/v1/chat/completions", content);
 
-            // Process the response from OpenAI
-            if (response.IsSuccessStatusCode)
+            try
             {
+                response.EnsureSuccessStatusCode();
+
+                // Process the response from OpenAI
                 string jsonResponse = await response.Content.ReadAsStringAsync();
                 JObject parsedResponse = JObject.Parse(jsonResponse);
-
                 var modelAnswerToken = parsedResponse.SelectToken("choices[0].message.content");
                 string? modelAnswer = modelAnswerToken?.ToString();
 
                 if (!string.IsNullOrEmpty(modelAnswer))
                 {
-                    // Log the OpenAI's response to chat history and return it
+                    _chatHistoryService.ReCalculateHistoryLength(chatId, _options.MaxTokens);
                     _chatHistoryService.AddChatMessage(modelAnswer, chatId, MessageType.System);
                     return modelAnswer;
                 }
@@ -95,10 +95,10 @@ namespace CodedByKay.SmartDialogueLib.Services
                     throw new Exception("The response from OpenAI did not contain a valid 'modelAnswer'.");
                 }
             }
-            else
+            catch (HttpRequestException ex)
             {
                 string errorContent = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Failed to retrieve response: {response.ReasonPhrase}. Response content: {errorContent}");
+                throw new Exception($"Failed to retrieve response: {response.ReasonPhrase}. Response content: {errorContent}", ex);
             }
         }
 

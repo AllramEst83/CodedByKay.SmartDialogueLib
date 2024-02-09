@@ -6,19 +6,19 @@
     public class SmartDialogueLibOptions
     {
         /// <summary>
-        /// Gets or sets the OpenAI API URL. Default is "https://api.openai.com/v1/chat/completions".
+        /// Gets or sets the OpenAI API URL. Default is "https://api.openai.com".
         /// </summary>
-        public string OpenAIApiUrl { get; set; } = "https://api.openai.com/v1/chat/completions";
-
-        /// <summary>
-        /// Gets or sets the model to be used for the API requests. Default is "gpt-3.5-turbo".
-        /// </summary>
-        public string Model { get; set; } = "gpt-3.5-turbo";
+        public string OpenAIApiUrl { get; set; } = "https://api.openai.com";
 
         /// <summary>
         /// Gets or sets the OpenAI API key. Replace "open_ai_api_key" with your actual API key.
         /// </summary>
         public string OpenAIApiKey { get; set; } = "open_ai_api_key";
+
+        /// <summary>
+        /// Gets or sets the model to be used for the API requests. Default is "gpt-3.5-turbo".
+        /// </summary>
+        public string Model { get; set; } = "gpt-3.5-turbo"; 
 
         /// <summary>
         /// Gets or sets the maximum number of tokens to generate in the completion. Default is 2000.

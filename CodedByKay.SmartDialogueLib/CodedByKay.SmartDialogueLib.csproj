@@ -5,7 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>CodedByKay.SmartDialogue</PackageId>
-    <Version>1.0.3-alpha</Version>
+    <Version>1.0.5-alpha</Version>
+    <Owner>Kay Wiberg</Owner>
     <Authors>Kay Wiberg</Authors>
     <Company>CodedByKay</Company>
     <Product>Smart Dialogue Library</Product>
@@ -24,8 +25,8 @@
 
   <ItemGroup>
     <!-- Adjust paths to point one level up from the .csproj file -->
-    <None Include="../README.md" Pack="true" PackagePath=""/>
-    <None Include="../LICENSE.txt" Pack="true" PackagePath=""/>
+    <None Include="../README.md" Pack="true" PackagePath="" />
+    <None Include="../LICENSE.txt" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
