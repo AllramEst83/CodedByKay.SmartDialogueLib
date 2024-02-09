@@ -86,8 +86,8 @@ namespace CodedByKay.SmartDialogueLib.Services
 
                 if (!string.IsNullOrEmpty(modelAnswer))
                 {
-                    _chatHistoryService.ReCalculateHistoryLength(chatId, _options.MaxTokens);
                     _chatHistoryService.AddChatMessage(modelAnswer, chatId, MessageType.Model);
+                    _chatHistoryService.ReCalculateHistoryLength(chatId, _options.MaxTokens);
                     return modelAnswer;
                 }
                 else
