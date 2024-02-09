@@ -45,7 +45,7 @@ namespace CodedByKay.SmartDialogueLib.Services
             // Prepare the list of messages for the OpenAI request, starting with a system prompt
             var messagesList = new List<AssistantModel>()
             {
-                new(){ Role = "system", Content = "Model instruction" }
+                new(){ Role = "system", Content = _options.ModelInstruction}
             };
 
             // Retrieve and add the chat history to the request payload
@@ -87,7 +87,7 @@ namespace CodedByKay.SmartDialogueLib.Services
                 if (!string.IsNullOrEmpty(modelAnswer))
                 {
                     _chatHistoryService.ReCalculateHistoryLength(chatId, _options.MaxTokens);
-                    _chatHistoryService.AddChatMessage(modelAnswer, chatId, MessageType.System);
+                    _chatHistoryService.AddChatMessage(modelAnswer, chatId, MessageType.Model);
                     return modelAnswer;
                 }
                 else

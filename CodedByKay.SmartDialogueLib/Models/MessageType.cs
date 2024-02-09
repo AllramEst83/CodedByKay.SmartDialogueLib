@@ -10,6 +10,6 @@ namespace CodedByKay.SmartDialogueLib.Models
     {
         Unknown = 0,
         User = 1,
-        System = 2
+        Model = 2
     }
 }
