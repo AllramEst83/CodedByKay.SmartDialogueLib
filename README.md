@@ -2,20 +2,20 @@
 
 ## Overview
 
-`CodedByKay.SmartDialogue` is a .NET class library designed to facilitate easy communication with the OpenAI Assistant API, integrating seamlessly into .NET web applications. It supports sending messages, receiving responses, and maintaining a chat history.
+`CodedByKay.SmartDialogue` is a .NET class library designed to facilitate easy communication with the OpenAI API, integrating seamlessly into .NET web applications. It supports sending messages, receiving responses, and maintaining a chat history.
 
 ## Features
 
 ### Core Features
 
 - **Middleware Integration**: Easily integrates into the middleware pipeline of a .NET web application.
-- **Asynchronous Communication**: Communicates asynchronously with the OpenAI Assistant API.
+- **Asynchronous Communication**: Communicates asynchronously with the OpenAI API.
 - **Secure API Key Management**: Offers a secure way to manage and use your OpenAI API key.
 - **Chat History Management**: Utilizes a `ConcurrentDictionary` for efficient and thread-safe chat history management.
 
 ### OpenAI API Communication
 
-- **Send Messages**: Allows sending messages to the OpenAI Assistant API.
+- **Send Messages**: Allows sending messages to the OpenAI API.
 - **Receive and Forward Responses**: Receives responses from OpenAI and forwards them to the library user.
 - **Maintain Chat History**: Keeps a record of the chat history that can be utilized in subsequent API requests for context.
 
@@ -104,4 +104,4 @@ public class ChatRequest
 ```
 
 ### Conclusion
-With CodedByKay.SmartDialogue, you can enhance your .NET web applications by integrating sophisticated chat functionalities powered by the OpenAI Assistant API. Follow this guide to set up and start leveraging this powerful library in your projects.
+With CodedByKay.SmartDialogue, you can enhance your .NET web applications by integrating sophisticated chat functionalities powered by the OpenAI API. Follow this guide to set up and start leveraging this powerful library in your projects.
