@@ -56,14 +56,14 @@ namespace CodedByKay.SmartDialogueLib.Services
                 messagesList.Add(new AssistantModel()
                 {
                     Role = role,
-                    Content = historyMessage.Message // Note: Fixed typo in 'Content'
+                    Content = historyMessage.Message
                 });
             }
 
             // Construct the request payload
             OpenAiRequestModel requestPayload = new()
             {
-                Messages = messagesList.ToArray(),
+                Messages = [.. messagesList],
                 MaxTokens = _options.MaxTokens,
                 Temperature = _options.Temperature,
                 TopP = _options.TopP,
@@ -72,30 +72,21 @@ namespace CodedByKay.SmartDialogueLib.Services
 
             // Serialize the request payload to JSON and send it to OpenAI
             var content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("messages", content);
-            response.EnsureSuccessStatusCode();
+            var response = await _httpClient.PostAsync("/v1/chat/completions", content);
 
-            // Process the response from OpenAI
-            if (response.IsSuccessStatusCode)
+            try
             {
-                // Read the response content as a string asynchronously.
+                response.EnsureSuccessStatusCode();
+
+                // Process the response from OpenAI
                 string jsonResponse = await response.Content.ReadAsStringAsync();
-
-                // Parse the JSON response string into a JObject for easier manipulation.
                 JObject parsedResponse = JObject.Parse(jsonResponse);
-
-                // Select the specific token that holds the model's answer from the parsed JSON object.
                 var modelAnswerToken = parsedResponse.SelectToken("choices[0].message.content");
-
-                // Safely convert the selected token to a string, handling the case where the token might not exist.
                 string? modelAnswer = modelAnswerToken?.ToString();
 
                 if (!string.IsNullOrEmpty(modelAnswer))
                 {
-                    // Recalculate the chat history length so it does not exceed the max allowed specified token limit.
                     _chatHistoryService.ReCalculateHistoryLength(chatId, _options.MaxTokens);
-
-                    // Log the OpenAI's response to chat history and return it
                     _chatHistoryService.AddChatMessage(modelAnswer, chatId, MessageType.System);
                     return modelAnswer;
                 }
@@ -104,10 +95,10 @@ namespace CodedByKay.SmartDialogueLib.Services
                     throw new Exception("The response from OpenAI did not contain a valid 'modelAnswer'.");
                 }
             }
-            else
+            catch (HttpRequestException ex)
             {
                 string errorContent = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Failed to retrieve response: {response.ReasonPhrase}. Response content: {errorContent}");
+                throw new Exception($"Failed to retrieve response: {response.ReasonPhrase}. Response content: {errorContent}", ex);
             }
         }
 
