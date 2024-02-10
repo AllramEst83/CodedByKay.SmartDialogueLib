@@ -64,6 +64,7 @@ public void ConfigureServices(IServiceCollection services)
         options.Temperature = 1;
         options.TopP = 1;
         options.AverageTokeLenght = 2.85;
+        options.ModelInstruction = "You can find the default model instructions further down in the GitHub repository's README file."
     });
 }
 ```
