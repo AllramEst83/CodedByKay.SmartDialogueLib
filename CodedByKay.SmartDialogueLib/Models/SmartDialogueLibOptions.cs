@@ -70,7 +70,7 @@
         /// as both an operational framework for the model and a benchmark for developing AI interactions
         /// that prioritize user comprehension, engagement, and ethical standards.
         /// </remarks>
-        internal string ModelInstruction { get; } =
+        public string ModelInstruction { get; set; } =
         @"
             SmartDialogue Model Instruction Overview
 
