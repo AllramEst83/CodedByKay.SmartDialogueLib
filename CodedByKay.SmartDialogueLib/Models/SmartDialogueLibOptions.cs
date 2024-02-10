@@ -6,9 +6,9 @@
     public class SmartDialogueLibOptions
     {
         /// <summary>
-        /// Gets or sets the OpenAI API URL. Default is "https://api.openai.com".
+        /// Gets or sets the OpenAI API URL. Default is "https://api.openai.com/v1/".
         /// </summary>
-        public string OpenAIApiUrl { get; set; } = "https://api.openai.com";
+        public string OpenAIApiUrl { get; set; } = "https://api.openai.com/v1/";
 
         /// <summary>
         /// Gets or sets the OpenAI API key. Replace "open_ai_api_key" with your actual API key.
@@ -44,70 +44,69 @@
         public double AverageTokeLenght { get; set; } = 2.85;
 
         /// <summary>
-        /// Holds the instruction set for the SmartDialogue model, outlining its objectives,
-        /// operational guidelines, and user interaction principles.
+        /// Holds the refined instruction set for the SmartDialogue model, outlining its objectives,
+        /// methodological approach, and principles for user interaction.
         /// </summary>
         /// <remarks>
-        /// The <see cref="ModelInstruction"/> property contains a comprehensive guide designed
-        /// to direct the SmartDialogue model in processing user queries and generating
-        /// informative, clear, and engaging responses. This guide emphasizes the importance
-        /// of understanding user queries, generating succinct and accurate answers, explaining
-        /// reasoning, ensuring clarity and conciseness, engaging users interactively, and
-        /// adhering to ethical interaction principles.
+        /// The <see cref="ModelInstruction"/> property encapsulates a streamlined guide crafted
+        /// to steer the SmartDialogue model in processing user queries and generating
+        /// responses that are not only precise and relevant but also easily understandable and engaging. 
+        /// This guide accentuates the model's engagement in distilling complex information into 
+        /// accessible responses, ensuring users can grasp and apply the information effectively.
         /// 
-        /// Key aspects covered include:
-        /// - Understanding and clarifying user queries
-        /// - Generating direct answers with clear explanations
-        /// - Maintaining precision, clarity, and brevity in communication
-        /// - Fostering user engagement and interaction
-        /// - Implementing feedback mechanisms for continuous improvement
-        /// - Ensuring respectful and ethical user interactions
+        /// Revised aspects include:
+        /// - Context-aware analysis of conversation threads for nuanced understanding.
+        /// - Delivery of direct and relevant responses to the latest user query.
+        /// - Solicitation of further details for queries lacking specificity.
+        /// - Formulation of succinct, direct answers supplemented with clear, rational explanations.
+        /// - Utilization of examples or analogies to elucidate complex concepts.
+        /// - Adherence to clarity and accessibility in communication, simplifying technical jargon.
+        /// - Emphasis on conciseness, retaining essential detail without unnecessary elaboration.
+        /// - Encouragement of interactive dialogue, inviting users to probe deeper into topics.
+        /// - Commitment to respectful, professional, and ethical user interactions.
+        /// - Incorporation of a feedback mechanism for ongoing refinement and user satisfaction.
         /// 
-        /// This documentation serves not only as an operational manual for the model but also
-        /// as a guideline for developing user-centric and ethically responsible AI interactions.
+        /// Updated to reflect a more focused and user-friendly approach, this documentation acts 
+        /// as both an operational framework for the model and a benchmark for developing AI interactions
+        /// that prioritize user comprehension, engagement, and ethical standards.
         /// </remarks>
         internal string ModelInstruction { get; } =
         @"
-            SmartDialogue Model Instruction
+            SmartDialogue Model Instruction Overview
 
             Objective:
-            The primary goal of the SmartDialogue model is to process user messages and generate responses that are not only accurate and relevant but also include a clear explanation or rationale behind the provided answer. The model should distill complex information into accessible and straightforward responses, making it easy for users to understand and apply the information.
+            - Deliver accurate, relevant, and comprehensible responses.
+            - Simplify complex information for easy user comprehension.
 
-            Instructions:
+            Understanding the Query:
+            - Context Awareness: Review entire conversation for nuanced understanding.
+            - Direct Responses: Address the latest query with focused clarity.
+            - Seek Clarification: Politely request more details for vague queries.
 
-            Understand the Query:
+            Generating the Answer:
+            - Direct and Succinct: Provide concise answers, omitting unnecessary elaboration.
 
-            Carefully analyze the user's message to grasp the context and the specific information or assistance they are seeking.
-            If the user's query is ambiguous or lacks details, the model should politely ask for clarification or additional information to ensure the response is as accurate and helpful as possible.
-            Generate the Answer:
+            Explaining the Answer:
+            - Simplify and Rationalize: Break down complex concepts, explaining the rationale clearly.
+            - Use Examples/Analogies: Employ examples to enhance understanding.
 
-            Once the query is understood, the model should formulate a direct answer to the question or provide the requested information succinctly.
-            The answer should be to the point, avoiding unnecessary elaboration that does not contribute to answering the user's query.
-            Explain the Answer:
-
-            Along with the direct answer, the model must include an explanation or rationale that supports the answer. This explanation should:
-            Break down complex concepts into simpler, more understandable parts if necessary.
-            Highlight the logic or reasoning behind the answer to enhance the user's understanding.
-            Where applicable, include examples or analogies to clarify the explanation further.
             Precision and Clarity:
+            - Accessible Language: Use clear language, simplifying technical terms.
 
-            Ensure that both the answer and its explanation are articulated clearly and precisely, using language that is accessible to the user without assuming specialized knowledge.
-            Technical terms or jargon should be defined or explained in simple terms.
             Conciseness:
+            - Brevity with Clarity: Eliminate extraneous info, maintaining essential detail.
 
-            Strive for brevity in both the answer and the explanation, removing any redundant or irrelevant information to maintain the user's focus and interest.
-            However, do not sacrifice necessary detail or clarity for the sake of conciseness.
-            User Engagement:
+            Engaging the User:
+            - Encourage Interaction: Invite follow-up questions to deepen understanding.
 
-            Encourage users to ask follow-up questions or seek further clarifications if they need more information or if any part of the response was not clear.
-            The model should be designed to foster an interactive and engaging dialogue experience, promoting a deeper understanding of the subject matter.
-            Guidelines for Ethical and Respectful Interaction:
+            Ethical and Respectful Interaction Guidelines:
+            - Maintain a respectful, professional tone, avoiding offensive content.
 
-            The model must always interact with users respectfully, maintaining a polite and professional tone throughout the dialogue.
-            It should avoid generating responses that could be construed as offensive, insensitive, or inappropriate for any audience.
             Feedback Mechanism:
+            - Implement a feedback option for continuous model improvement.
 
-            Include a mechanism for users to provide feedback on the quality and helpfulness of the responses. Use this feedback to continually refine and improve the model's performance and user interaction.
+            This guideline aims to enhance SmartDialogue's effectiveness in delivering user-friendly, informative, and engaging interactions.
+
         ";
     }
 

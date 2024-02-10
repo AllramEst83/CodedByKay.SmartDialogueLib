@@ -37,7 +37,7 @@ namespace CodedByKay.SmartDialogueLib.Services
         /// <param name="messageType">The type of the message (User or System).</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains the OpenAI response.</returns>
         /// <exception cref="Exception">Thrown if the response from OpenAI does not contain a valid answer or if the request fails.</exception>
-        public async Task<string> SendChatMessageAsync(Guid chatId, string message, MessageType messageType)
+        public async Task<string> SendChatMessageAsync(Guid chatId, string message)
         {
             // Log the user's message to chat history
             _chatHistoryService.AddChatMessage(message, chatId, MessageType.User);
@@ -45,20 +45,21 @@ namespace CodedByKay.SmartDialogueLib.Services
             // Prepare the list of messages for the OpenAI request, starting with a system prompt
             var messagesList = new List<AssistantModel>()
             {
-                new(){ Role = "system", Content = _options.ModelInstruction}
+                new(){ Role = MessageType.System.ToString().ToLower(), Content = _options.ModelInstruction }
             };
 
             // Retrieve and add the chat history to the request payload
             var chatHistory = _chatHistoryService.GetChatMessages(chatId);
-            foreach (var historyMessage in chatHistory)
-            {
-                var role = historyMessage.MessageType == MessageType.User ? "user" : "assistant";
-                messagesList.Add(new AssistantModel()
-                {
-                    Role = role,
-                    Content = historyMessage.Message
-                });
-            }
+
+            // Select only messages that is user generated.
+            messagesList.AddRange(chatHistory
+                    .Where(chatMessage => chatMessage.MessageType == MessageType.User)
+                    .Select(historyMessage => new AssistantModel
+                    {
+                        Role = historyMessage.MessageType.ToString().ToLower(),
+                        Content = historyMessage.Message
+                    }));
+
 
             // Construct the request payload
             OpenAiRequestModel requestPayload = new()
@@ -72,7 +73,7 @@ namespace CodedByKay.SmartDialogueLib.Services
 
             // Serialize the request payload to JSON and send it to OpenAI
             var content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("/v1/chat/completions", content);
+            var response = await _httpClient.PostAsync("chat/completions", content);
 
             try
             {
@@ -86,7 +87,7 @@ namespace CodedByKay.SmartDialogueLib.Services
 
                 if (!string.IsNullOrEmpty(modelAnswer))
                 {
-                    _chatHistoryService.AddChatMessage(modelAnswer, chatId, MessageType.Model);
+                    _chatHistoryService.AddChatMessage(modelAnswer, chatId, MessageType.System);
                     _chatHistoryService.ReCalculateHistoryLength(chatId, _options.MaxTokens);
                     return modelAnswer;
                 }

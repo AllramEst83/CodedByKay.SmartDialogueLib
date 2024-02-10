@@ -22,58 +22,62 @@ namespace CodedByKay.SmartDialogueLib.Services
         }
 
         /// <summary>
-        /// Adds a chat message to the chat history for a specified chat session.
+        /// Adds a new chat message to the specified chat.
         /// </summary>
-        /// <param name="message">The chat message to add.</param>
-        /// <param name="chatId">The unique identifier of the chat session.</param>
-        /// <param name="messageType">The type of the message (e.g., User or System).</param>
-        /// <returns>True if the message was added successfully.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when the chatId is empty.</exception>
-        /// <exception cref="ArgumentException">Thrown when the messageType is unknown.</exception>
+        /// <param name="message">The content of the chat message.</param>
+        /// <param name="chatId">The unique identifier for the chat.</param>
+        /// <param name="messageType">The type of the chat message.</param>
+        /// <returns>True if the message was added successfully; otherwise, false.</returns>
         public bool AddChatMessage(string message, Guid chatId, MessageType messageType)
         {
-            // Validation checks for chatId and messageType
-            if (chatId == Guid.Empty)
-            {
-                throw new ArgumentNullException(nameof(chatId), "Please provide a valid chatId.");
-            }
+            // Validate input parameters
+            if (chatId == Guid.Empty) throw new ArgumentNullException(nameof(chatId), "Please provide a valid chatId.");
+            if (messageType == MessageType.Unknown) throw new ArgumentException("Please provide a valid MessageType.", nameof(messageType));
 
-            if (messageType == MessageType.Unknown)
+            // Create a new chat message object
+            var newMessage = new ChatMessage
             {
-                throw new ArgumentException("Please provide a valid MessageType.", nameof(messageType));
-            }
+                Message = message,
+                MessageType = messageType,
+                Timestamp = DateTime.UtcNow
+            };
 
-            // Adds the new message to the chat history
-            var messages = _chatHistories.GetOrAdd(chatId, _ => new List<ChatMessage>());
-            lock (messages)
-            {
-                messages.Add(new ChatMessage()
+            // Add the new message to the chat history dictionary
+            _chatHistories.AddOrUpdate(chatId,
+                // If chatId doesn't exist, initialize and add the new message
+                _ => new List<ChatMessage> { newMessage },
+                // If chatId exists, add the new message thread-safely
+                (_, existingMessages) =>
                 {
-                    Message = message,
-                    MessageType = messageType,
-                    // Timestamp and other properties are set by the ChatMessage constructor
+                    lock (existingMessages) // Lock the list during update to ensure thread safety
+                    {
+                        existingMessages.Add(newMessage);
+                    }
+                    return existingMessages;
                 });
-            }
 
             return true;
         }
 
         /// <summary>
-        /// Retrieves the chat history for a specified chat session.
+        /// Retrieves ordered chat messages for a given session ID.
         /// </summary>
-        /// <param name="sessionId">The unique identifier of the chat session.</param>
-        /// <returns>A list of ChatMessage objects for the session. Returns an empty list if no messages are found.</returns>
+        /// <param name="sessionId">The unique identifier for the session.</param>
+        /// <returns>A list of <see cref="ChatMessage"/> objects ordered by timestamp.</returns>
         public List<ChatMessage> GetChatMessages(Guid sessionId)
         {
-            // Attempts to get the chat history for the given sessionId
             if (_chatHistories.TryGetValue(sessionId, out var chatHistory))
             {
-                return chatHistory;
+                List<ChatMessage> orderedMessages;
+                lock (chatHistory) // Ensure thread-safe read and order
+                {
+                    orderedMessages = chatHistory.OrderBy(x => x.Timestamp).ToList();
+                }
+                return orderedMessages;
             }
             else
             {
-                // Returns an empty list if no history is found
-                return [];
+                return new List<ChatMessage>();
             }
         }
 

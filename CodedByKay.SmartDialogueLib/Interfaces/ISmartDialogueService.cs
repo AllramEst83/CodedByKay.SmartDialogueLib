@@ -4,7 +4,7 @@ namespace CodedByKay.SmartDialogueLib.Interfaces
 {
     public interface ISmartDialogueService
     {
-        Task<string> SendChatMessageAsync(Guid chatId, string message, MessageType messageType);
+        Task<string> SendChatMessageAsync(Guid chatId, string message);
 
     }
 }
