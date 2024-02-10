@@ -41,7 +41,7 @@
         /// <remarks>
         /// This value is used to estimate the number of tokens in the input text based on character count.
         /// </remarks>
-        public double AverageTokeLenght { get; set; } = 2.85;
+        public double AverageTokenLength { get; set; } = 2.85;
 
         /// <summary>
         /// Holds the refined instruction set for the SmartDialogue model, outlining its objectives,

@@ -107,41 +107,50 @@ namespace CodedByKay.SmartDialogueLib.Services
         }
 
         /// <summary>
-        /// Recalculates and trims the chat history for a specified chat session to ensure it does not exceed a specified token count.
+        /// Adjusts chat history length to meet the maximum token count limit.
         /// </summary>
-        /// <param name="chatId">The unique identifier of the chat session.</param>
-        /// <param name="maxTokenCount">The maximum allowed token count for the chat history.</param>
+        /// <param name="chatId">Identifier for the chat session.</param>
+        /// <param name="maxTokenCount">Maximum token count allowed in the chat history.</param>
         public void ReCalculateHistoryLength(Guid chatId, int maxTokenCount)
         {
-            // Check if the specified chat history exists
+            // Attempt to get the chat history for the given chatId
             if (_chatHistories.TryGetValue(chatId, out var chatHistory))
             {
-                // Get the current total token count
-                int totalTokenCount = chatHistory.Sum(message => EstimateTokenCount(message.Message, _options.AverageTokeLenght));
-
-                // Calculate how many tokens we need to remove
-                int tokensToRemove = totalTokenCount - _options.MaxTokens;
-
-                // Ensure that the chatHistory is sorted from oldest to newest
-                chatHistory = [.. chatHistory.OrderBy(x => x.Timestamp)];
-
-                while (tokensToRemove > 0 && chatHistory.Count > 0)
+                // Synchronize access to the chatHistory
+                lock (chatHistory)
                 {
-                    // The first message is the oldest due to the ordering above
-                    var messageToRemove = chatHistory[0];
-                    int messageTokenCount = EstimateTokenCount(messageToRemove.Message, _options.AverageTokeLenght);
+                    // Calculate the total estimated token count for all messages
+                    int totalTokenCount = chatHistory.Sum(message => EstimateTokenCount(message.Message, _options.AverageTokenLength));
 
-                    // Only remove the message if doing so won't make tokensToRemove negative
-                    if (tokensToRemove - messageTokenCount >= 0)
+                    // Check if the total estimated token count exceeds the maximum allowed
+                    if (totalTokenCount > _options.MaxTokens)
                     {
-                        tokensToRemove -= messageTokenCount;
-                        chatHistory.RemoveAt(0); // Removes the oldest message
-                    }
-                    else
-                    {
-                        // If removing the message would make tokensToRemove negative,
-                        // break out of the loop as we can't remove any more messages without going below zero.
-                        break;
+                        // Calculate the excess token count
+                        int excessTokens = totalTokenCount - _options.MaxTokens;
+
+                        // Temporarily store messages for removal
+                        var messagesForRemoval = new List<ChatMessage>();
+
+                        // Iterate through messages, oldest first, to determine which to remove
+                        foreach (var message in chatHistory.OrderBy(x => x.Timestamp))
+                        {
+                            int messageTokenCount = EstimateTokenCount(message.Message, _options.AverageTokenLength);
+                            excessTokens -= messageTokenCount;
+
+                            messagesForRemoval.Add(message);
+
+                            // If the removal of this message brings us within the limit, stop
+                            if (excessTokens <= 0)
+                            {
+                                break;
+                            }
+                        }
+
+                        // Remove the calculated messages from chat history
+                        foreach (var message in messagesForRemoval)
+                        {
+                            chatHistory.Remove(message);
+                        }
                     }
                 }
             }
